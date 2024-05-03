@@ -1,0 +1,16 @@
+{
+  "name": "employeetracker",
+  "version": "1.0.0",
+  "description": "an app to track employees and departments in a business",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "OrionC11",
+  "license": "MIT",
+  "dependencies": {
+    "inquirer": "^9.2.20",
+    "mysql": "^2.18.1"
+  }
+}
