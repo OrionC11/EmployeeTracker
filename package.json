@@ -10,7 +10,7 @@
   "author": "OrionC11",
   "license": "MIT",
   "dependencies": {
-    "inquirer": "^9.2.20",
-    "mysql": "^2.18.1"
+    "inquirer": "^8.2.4",
+    "mysql2": "^3.9.7"
   }
 }

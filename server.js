@@ -12,12 +12,12 @@ const addDepartmentQuestions = [
 const addEmployeeQuestions = [
   {
     type: "input",
-    name: "firstName",
+    name: "first_name",
     message: "What is the first name of the employee you would like to add?",
   },
   {
     type: "input",
-    name: "lastName",
+    name: "last_name",
     message: "What is the last name of the employee you would like to add?",
   },
   {
@@ -40,7 +40,7 @@ const addEmployeeQuestions = [
 const addRoleQuestions = [
   {
     type: "input",
-    name: "jobTitle",
+    name: "title",
     message: "What is the job title of the role you would like to add?",
   },
   {
@@ -50,8 +50,8 @@ const addRoleQuestions = [
   },
   {
     type: "input",
-    name: "departmentName",
-    message: "What department is the role part of?",
+    name: "department_id",
+    message: "What is the department id the role is part of?",
   },
 ];
 
@@ -66,7 +66,7 @@ const menuQuestions = [
       "View All Employees",
       "Add New Employee",
       "View All Roles",
-      "Add a role",
+      "Add a Role",
       "Exit",
     ],
   },
@@ -84,7 +84,7 @@ const viewDepartment = () => {
 const viewEmployees = () => {
   db.promise()
     .query(
-      "SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN manager ON employee.manager_id = manager.id;"
+      "SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id"
     )
     .then((res) => {
       console.table(res[0]);
@@ -117,45 +117,37 @@ const addDepartment = () => {
 const addEmployee = () => {
   inquirer
     .prompt(addEmployeeQuestions)
-    .then(({ firstName, lastName, role_id, department_id, manager_id }) => {
+    .then(({ first_name, last_name, role_id, department_id, manager_id }) => {
       db.promise()
         .query(
           `
-          INSERT INTO employee(firstName) VALUE ('${firstName}');
-          INSERT INTO employee(lastName) VALUE ('${lastName}');
-          INSERT INTO employee(role_id) VALUE ('${role_id}');
-          INSERT INTO employee(department_id) VALUE ('${department_id});
-          INSERT INTO employee(manager_id) VALUE ('${manager_id}');
+          INSERT INTO employee(first_name, last_name, role_id, department_id, manager_id) VALUE ('${first_name}', '${last_name}', '${role_id}', '${department_id}', '${manager_id}');
           `
         )
 
         .then((res) => {
-          console.log(`Added ${firstName} to database in employee table`);
+          console.log(`Added ${first_name} to database in employee table`);
           showList();
         });
     });
 };
 const addRole = () => {
-  inquirer
-    .prompt(addRoleQuestions)
-    .then(({ jobTitle, salary, departmentName }) => {
-      db.promise()
-        .query(
-          `
-        INSERT INTO role(jobTitle) VALUE ('${jobTitle}');
-        INSERT INTO role(salary) VALUE ('${salary}');
-        INSERT INTO role(departmentName) VALUE ('${departmentName}');
+  inquirer.prompt(addRoleQuestions).then(({ title, salary, department_id }) => {
+    db.promise()
+      .query(
         `
-        )
-        .then((res) => {
-          console.log(`Added ${departmentName} to database`);
-          showList();
-        });
-    });
+        INSERT INTO role(title, salary, department_id) VALUE ('${title}', '${salary}', '${department_id}');
+        `
+      )
+      .then((res) => {
+        console.log(`Added ${title} to database`);
+        showList();
+      });
+  });
 };
 
 const listOptions = (response) => {
-  switch (response.menuChoice) {
+  switch (response.action) {
     case "View All Departments":
       viewDepartment();
       break;
@@ -185,7 +177,10 @@ const listOptions = (response) => {
 };
 
 const showList = () => {
-  inquirer.prompt(menuQuestions).then((response) => {
-    listOptions(response);
-  });
+  inquirer.prompt(menuQuestions).then((response) => listOptions(response));
 };
+
+const init = () => {
+  showList();
+};
+init();
