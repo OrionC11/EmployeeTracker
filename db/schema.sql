@@ -14,7 +14,7 @@ CREATE TABLE role(
     salary DECIMAL(10,2) NOT NULL,
     department_id INT NOT NULL,
     FOREIGN KEY (department_id) REFERENCES department(id)
-)
+);
 
 CREATE TABLE employee(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -24,6 +24,6 @@ CREATE TABLE employee(
     department_id INT NOT NUll,
     manager_id INT,
     FOREIGN KEY (role_id) REFERENCES role(id),
-    FOREIGN KEY (department_id) REFERENCES department(id)
+    FOREIGN KEY (department_id) REFERENCES department(id),
     FOREIGN Key (manager_id) REFERENCES employee(id)
 );

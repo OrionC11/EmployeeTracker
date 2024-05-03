@@ -33,7 +33,7 @@ const addEmployeeQuestions = [
   {
     type: "input",
     name: "manager_id",
-    message: "Who is the ID of the employee's Manager?",
+    message: "What is the ID of the employee's Manager?",
   },
 ];
 
@@ -83,7 +83,9 @@ const viewDepartment = () => {
 
 const viewEmployees = () => {
   db.promise()
-    .query("SELECT * from employee;")
+    .query(
+      "SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN manager ON employee.manager_id = manager.id;"
+    )
     .then((res) => {
       console.table(res[0]);
       showList();
@@ -92,7 +94,9 @@ const viewEmployees = () => {
 
 const viewRoles = () => {
   db.promise()
-    .query("SELECT * from role;")
+    .query(
+      "SELECT * from role LEFT JOIN department on role.department_id =department.id;"
+    )
     .then((res) => {
       console.table(res[0]);
       showList();
@@ -113,26 +117,23 @@ const addDepartment = () => {
 const addEmployee = () => {
   inquirer
     .prompt(addEmployeeQuestions)
-    .then(
-      ({ firstName, lastName, role_id, department_id, salary, manager }) => {
-        db.promise()
-          .query(
-            `
+    .then(({ firstName, lastName, role_id, department_id, manager_id }) => {
+      db.promise()
+        .query(
+          `
           INSERT INTO employee(firstName) VALUE ('${firstName}');
           INSERT INTO employee(lastName) VALUE ('${lastName}');
           INSERT INTO employee(role_id) VALUE ('${role_id}');
           INSERT INTO employee(department_id) VALUE ('${department_id});
-          INSERT INTO employee(salary) VALUE ('${salary}');
-          INSERT INTO employee(manager) VALUE ('${manager}');
+          INSERT INTO employee(manager_id) VALUE ('${manager_id}');
           `
-          )
+        )
 
-          .then((res) => {
-            console.log(`Added ${firstName} to database in employee table`);
-            showList();
-          });
-      }
-    );
+        .then((res) => {
+          console.log(`Added ${firstName} to database in employee table`);
+          showList();
+        });
+    });
 };
 const addRole = () => {
   inquirer
