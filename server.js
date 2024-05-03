@@ -22,23 +22,18 @@ const addEmployeeQuestions = [
   },
   {
     type: "input",
-    name: "jobTitle",
-    message: "What is the job title of the employee you would like to add?",
+    name: "role_id",
+    message: "What is the role_id of the employee you would like to add?",
   },
   {
     type: "input",
-    name: "departmentName",
-    message: "What department is the employee part of?",
+    name: "department_id",
+    message: "What is the department ID that the employee is part of?",
   },
   {
     type: "input",
-    name: "salary",
-    message: "What is the salary of the employee?",
-  },
-  {
-    type: "input",
-    name: "manager",
-    message: "Who is the manager of the employee?",
+    name: "manager_id",
+    message: "Who is the ID of the employee's Manager?",
   },
 ];
 
@@ -72,7 +67,6 @@ const menuQuestions = [
       "Add New Employee",
       "View All Roles",
       "Add a role",
-      "Update Employee Role",
       "Exit",
     ],
   },
@@ -120,16 +114,19 @@ const addEmployee = () => {
   inquirer
     .prompt(addEmployeeQuestions)
     .then(
-      ({ firstName, lastName, jobTitle, departmentName, salary, manager }) => {
+      ({ firstName, lastName, role_id, department_id, salary, manager }) => {
         db.promise()
-          .query(`INSERT INTO employee(firstName) VALUE ('${firstName}');`)
-          .query(`INSERT INTO employee(lastName) VALUE ('${lastName}');`)
-          .query(`INSERT INTO employee(jobTitle) VALUE ('${jobTitle}');`)
           .query(
-            `INSERT INTO employee(departmentName) VALUE ('${departmentName}');`
+            `
+          INSERT INTO employee(firstName) VALUE ('${firstName}');
+          INSERT INTO employee(lastName) VALUE ('${lastName}');
+          INSERT INTO employee(role_id) VALUE ('${role_id}');
+          INSERT INTO employee(department_id) VALUE ('${department_id});
+          INSERT INTO employee(salary) VALUE ('${salary}');
+          INSERT INTO employee(manager) VALUE ('${manager}');
+          `
           )
-          .query(`INSERT INTO employee(salary) VALUE ('${salary}');`)
-          .query(`INSERT INTO employee(manager) VALUE ('${manager}');`)
+
           .then((res) => {
             console.log(`Added ${firstName} to database in employee table`);
             showList();
@@ -142,9 +139,13 @@ const addRole = () => {
     .prompt(addRoleQuestions)
     .then(({ jobTitle, salary, departmentName }) => {
       db.promise()
-        .query(`INSERT INTO role(jobTitle) VALUE ('${jobTitle}');`)
-        .query(`INSERT INTO role(salary) VALUE ('${salary}');`)
-        .query(`INSERT INTO role(departmentName) VALUE ('${departmentName}');`)
+        .query(
+          `
+        INSERT INTO role(jobTitle) VALUE ('${jobTitle}');
+        INSERT INTO role(salary) VALUE ('${salary}');
+        INSERT INTO role(departmentName) VALUE ('${departmentName}');
+        `
+        )
         .then((res) => {
           console.log(`Added ${departmentName} to database`);
           showList();
@@ -171,9 +172,6 @@ const listOptions = (response) => {
       break;
     case "Add a Role":
       addRole();
-      break;
-    case "Update Employee Role":
-      updateEmployeeRole();
       break;
     case "Exit":
       db.end();
